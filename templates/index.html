@@ -73,17 +73,8 @@ h1 {
 <script>
 const messagesDiv = document.getElementById("messages");
 
-// 🧠 Function to clear 'New' badges from older cards
-function clearOldBadges() {
-    const badges = document.querySelectorAll('.badge-new');
-    badges.forEach(badge => badge.remove());
-}
-
-// 🧩 Function to add a new message
+// 🧩 Add a new message card (keeps old ones)
 function addMessageCard(msg) {
-    // Remove old "New" badges before showing the new one
-    clearOldBadges();
-
     const div = document.createElement("div");
     div.className = "message-card";
     div.innerHTML = `
@@ -93,18 +84,41 @@ function addMessageCard(msg) {
         <span class="badge-new">New</span>
     `;
 
-    // Remove all previous cards so only the new one remains
-    messagesDiv.innerHTML = "";
+    // Show new message on top
     messagesDiv.prepend(div);
+
+    // Remove "New" badge after 5 seconds
+    setTimeout(() => {
+        const badge = div.querySelector(".badge-new");
+        if (badge) badge.remove();
+    }, 5000);
 }
 
-// 🔵 Listen for new messages only
+// 🔹 Load existing messages when page loads
+async function loadOldMessages() {
+    const res = await fetch("/data");
+    const data = await res.json();
+    data.forEach(msg => addMessageCard({ ...msg, isNew: false }));
+}
+
+// 🔵 Listen for new messages from Flask (SSE)
 const evtSource = new EventSource("/stream");
 
 evtSource.onmessage = function(event) {
-    const newMessages = JSON.parse(event.data);
-    newMessages.forEach(msg => addMessageCard(msg));
+    try {
+        const newMessages = JSON.parse(event.data);
+        if (Array.isArray(newMessages)) {
+            newMessages.forEach(msg => addMessageCard(msg));
+        } else {
+            addMessageCard(newMessages);
+        }
+    } catch (e) {
+        console.error("Invalid SSE message:", e);
+    }
 };
+
+// Load old data initially
+loadOldMessages();
 </script>
 
 </body>
