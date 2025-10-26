@@ -37,7 +37,7 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive"
 ]
 credentials = service_account.Credentials.from_service_account_file(
-    "/etc/secrets/credentials.json", scopes=SCOPES
+    "/etc/secrets/google-key.json", scopes=SCOPES
 )
 gc = gspread.authorize(credentials)
 sheet = gc.open("candidatedata").sheet1
@@ -155,3 +155,4 @@ def index():
 # ===== Run Flask =====
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
+
