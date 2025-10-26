@@ -26,7 +26,7 @@ ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
 AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
 TWILIO_WHATSAPP = os.getenv("TWILIO_WHATSAPP_NUMBER")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-GOOGLE_CREDS_FILE = os.getenv("GOOGLE_APPLICATION_CREDENTIALS_FILE")
+
 
 # Gemini Client
 gemini_client = genai.Client(api_key=GEMINI_API_KEY)
@@ -34,7 +34,7 @@ gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 # Google Sheets using credentials file
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets",
           "https://www.googleapis.com/auth/drive"]
-credentials = Credentials.from_service_account_file(GOOGLE_CREDS_FILE, scopes=SCOPES)
+credentials = Credentials.from_service_account_file("/etc/secrets/google-key.json",, scopes=SCOPES)
 gc = gspread.authorize(credentials)
 sheet = gc.open("candidatedata").sheet1
 
@@ -149,3 +149,4 @@ def index():
 # ===== Run Flask =====
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
+
