@@ -34,7 +34,7 @@ gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 # Google Sheets using credentials file
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets",
           "https://www.googleapis.com/auth/drive"]
-credentials = Credentials.from_service_account_file("/etc/secrets/google-key.json",, scopes=SCOPES)
+credentials = Credentials.from_service_account_file("/etc/secrets/google-key.json", scopes=SCOPES)
 gc = gspread.authorize(credentials)
 sheet = gc.open("candidatedata").sheet1
 
@@ -149,4 +149,5 @@ def index():
 # ===== Run Flask =====
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
+
 
